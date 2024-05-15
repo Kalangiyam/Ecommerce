@@ -126,22 +126,26 @@
         }
         
         var url = "/process_order/"
-        fetch(url,{
-            method:'POST',
-            headers:{
-                'Content-Type':'application/json',
-                'x-CSRFToken':csrftoken,
-            },
-            body:JSON.stringify({'form':userFormData,'shipping':shippingInfo})
-        })
-        .then((response)=>{
-            return response.json()
-        })    
-        .then((data)=>{
-            console.log('Success:',data);
-            alert('Transaction completed');
-            window.location.href = "{% url 'store:store' %}"
-        })
+        fetch(url, {
+	    		method:'POST',
+	    		headers:{
+	    			'Content-Type':'applicaiton/json',
+	    			'X-CSRFToken':csrftoken,
+	    		}, 
+	    		body:JSON.stringify({'form':userFormData, 'shipping':shippingInfo}),
+	    		
+	    	})
+	    	.then((response) => response.json())
+	    	.then((data) => {
+				console.log('Success:', data);
+				alert('Transaction completed');  
+
+				cart = {}
+				document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+
+				window.location.href = "{% url 'store:store' %}"
+
+				})
         console.log('User Info:', userFormData);
         console.log('Shipping Info:', shippingInfo);
     }

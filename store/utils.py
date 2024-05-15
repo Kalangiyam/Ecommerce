@@ -53,3 +53,4 @@ def cartData(request):
         items = cookieData['items']
 
     return {"items":items,"order":order,"cartItem":cartItem}
+
