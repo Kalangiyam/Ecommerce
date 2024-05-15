@@ -9,48 +9,29 @@ from .utils import *
 
 # Create your views here.
 def store (request):
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer,complete=False)
-        items = order.orderitem_set.all()
-        cartItem = order.get_cart_items
-    else:
-        cookieData = cookieCart(request)
-        cartItem = cookieData['cartItem']      
+    
+    data = cartData(request)
+    cartItem = data['cartItem']          
 
     products = Product.objects.all()
     context={"products":products,"cartItem":cartItem}
     return render(request,'store/store.html',context)
 
 def cart(request):
-    
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer,complete=False)
-        items = order.orderitem_set.all()
-        cartItem = order.get_cart_items        
-    else:  
-        cookieData = cookieCart(request)
-        cartItem = cookieData['cartItem']
-        order = cookieData['order']
-        items = cookieData['items']
+
+    data = cartData(request)
+    cartItem = data['cartItem']
+    order = data['order']
+    items = data['items']     
         
     context={"items":items,"order":order,"cartItem":cartItem}
     return render(request,'store/cart.html',context)
 
 def checkout(request):
-
-    if request.user.is_authenticated:
-        customer = request.user.customer
-        order, created = Order.objects.get_or_create(customer=customer,complete=False)
-        items = order.orderitem_set.all()
-        cartItem = order.get_cart_items
-        
-    else:
-        cookieData = cookieCart(request)
-        cartItem = cookieData['cartItem']
-        order = cookieData['order']
-        items = cookieData['items']
+    data = cartData(request)
+    cartItem = data['cartItem']
+    order = data['order']
+    items = data['items']  
         
     context={"items":items,"order":order,"cartItem":cartItem}
     return render(request,'store/checkout.html',context)
