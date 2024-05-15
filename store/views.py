@@ -2,7 +2,9 @@ from django.shortcuts import render
 from django.http import JsonResponse
 import json
 import datetime
+
 from .models import *
+
 
 
 # Create your views here.
@@ -53,25 +55,31 @@ def checkout(request):
         items = []
         order = {'get_cart_total':0,'get_cart_items':0,'shipping':False}
 
-        for i in cart:            
-            product = Product.objects.get(id=i)          
-            total = (product.price * cart[i]['quantity'])
-            order['get_cart_total'] += total
-            order['get_cart_items'] += cart[i]['quantity']
+        for i in cart:    
+            try:        
+                product = Product.objects.get(id=i)          
+                total = (product.price * cart[i]['quantity'])
+                order['get_cart_total'] += total
+                order['get_cart_items'] += cart[i]['quantity']
 
-            item = {
-                'product':{
-                    'id':product.id,
-                    'name':product.name,
-                    'price':product.price,
-                    'imageURL':product.imageURL,
-                },
-                'get_total':total,
-                'quantity':cart[i]['quantity'],
-            }
+                item = {
+                    'product':{
+                        'id':product.id,
+                        'name':product.name,
+                        'price':product.price,
+                        'imageURL':product.imageURL,
+                    },
+                    'get_total':total,
+                    'quantity':cart[i]['quantity'],
+                }
 
-            items.append(item)
-        
+                items.append(item)
+
+                if product.digital == False:
+                    order['shipping']=True
+            except:
+                pass     
+
         cartItem = order['get_cart_items']
     context={"items":items,"order":order,"cartItem":cartItem}
     return render(request,'store/checkout.html',context)
