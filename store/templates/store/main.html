@@ -52,7 +52,9 @@
 		  if (cart == undefined){
         cart = {}
         console.log('Cart Created!')
+        console.log('main.html1:',document.cookie);
         document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+        console.log('main.html2:',document.cookie);
 		  }
 		  console.log('Cart:', cart)
     </script>

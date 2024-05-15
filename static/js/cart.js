@@ -36,7 +36,9 @@ function addCookieItem(productId,action){
     }
 
     console.log('Cart:',cart);
+    console.log('cart.js1:',document.cookie);
     document.cookie ='cart=' + JSON.stringify(cart) + ";domain=;path=/"
+    console.log('cart.js2:',document.cookie);
     location.reload()
 }
 

@@ -44,10 +44,20 @@ def checkout(request):
         cartItem = order.get_cart_items
         
     else:
+        try:
+            cart = json.loads(request.COOKIES['cart'])
+        except:
+            cart = {}
+        print('Cart:',cart)
         items = []
         order = {'get_cart_total':0,'get_cart_items':0,'shipping':False}
+        for i in cart:            
+            product = Product.objects.get(id=i)          
+            total = (product.price * cart[i]['quantity'])
+            order['get_cart_total'] += total
+            order['get_cart_items'] += cart[i]['quantity']
+        
         cartItem = order['get_cart_items']
-    
     context={"items":items,"order":order,"cartItem":cartItem}
     return render(request,'store/checkout.html',context)
 
