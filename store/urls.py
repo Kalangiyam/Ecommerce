@@ -6,6 +6,7 @@ urlpatterns = [
     path('',views.store,name='store'),
     path('login/',views.user_login,name='login'),
     path('logout/',views.user_logout,name='logout'),
+    path('user_register/',views.user_register,name='user_register'),
     path('cart/',views.cart,name='cart'),
     path('checkout/',views.checkout,name='checkout'),
     path('update_item/',views.updateItem,name='update_item'),

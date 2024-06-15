@@ -1,7 +1,7 @@
 {% extends 'store/main.html' %}
 
 {% block content %}
-<div class="container bg-white mt-5  rounded" style="max-width: 600px;">    
+<div class="container bg-white mt-5  rounded" style="max-width: 500px;">    
     <form class="py-3 mx-3" action="" method="POST">
         {% csrf_token %}
 
@@ -9,6 +9,13 @@
             <div class="text-center" >
                 <h6 style="color:red">
                     {{ error_message }}
+                </h6>
+            </div>
+        {% endif %}
+        {% if message %}
+            <div class="text-center" >
+                <h6 style="color:rgb(74, 182, 245)">
+                    {{ message }}
                 </h6>
             </div>
         {% endif %}
@@ -20,6 +27,11 @@
             <input type="password" id="password" name="password" placeholder="Enter your password..." class="mt-2 form-control border-primary rounded">
         </div>
         <button type="submit" class="btn btn-primary fw-semibold text-white mt-4 col-12" style="background-color: #4f868c;">Login</button>
-    </form>    
+    </form>
+    <div class="p-3">
+        <small class="text-muted">
+            Need An Account? <a class="ml-2" href="{% url 'store:user_register' %}">Sing Up Now</a>
+        </small>
+    </div>    
  </div>
 {% endblock content %}

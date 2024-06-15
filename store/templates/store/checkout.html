@@ -69,7 +69,9 @@
 <script>
     let shipping = '{{order.shipping}}'
     let total = '{{order.get_cart_total}}'
+    let emails = JSON.parse('{{ u_emails|escapejs }}')
 
+    
     if(shipping == 'False'){
         document.getElementById('shipping-info').innerHTML=''
     }
@@ -120,11 +122,25 @@
             shippingInfo.zipcode = form.zipcode.value
         }
 
+        same_email = 0
         if(user == 'AnonymousUser'){
+            f_email = form.email.value
+            
             userFormData.name = form.name.value
-            userFormData.email = form.email.value
+            
+            for(let email of emails) {                
+                if(f_email === email){
+                    same_email +=1
+                    alert('This mail already exist')
+                    return window.location.href = "{% url 'store:checkout' %}"                   
+                }
+                
+                if(same_email == 0){
+                    userFormData.email = form.email.value
+                    
+                }
+            }
         }
-        
         var url = "/process_order/"
         fetch(url, {
 	    		method:'POST',

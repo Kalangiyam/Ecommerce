@@ -7,6 +7,7 @@ import datetime
 
 from .models import *
 from .utils import *
+from .forms import *
 
 
 # Create your views here.
@@ -18,20 +19,48 @@ def user_login(request):
 
         user = authenticate(request, username=username, password=password)
         if user is not None:
+            
             login(request,user)
             return redirect('/')
         else:
             error_message = 'Invalid username or password'
             return render(request,'store/login.html',{'error_message':error_message})
-    return render(request,'store/login.html')
+    else:
+        return render(request,'store/login.html')
 
 def user_logout(request):
     logout(request)
     return redirect('/')
 
-
-def store (request):
+def user_register(request):
     
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            email = 0
+            if 'email' in form.changed_data:
+                print(form.cleaned_data['email'])
+                email = form.cleaned_data['email']
+                print(f'email:{email}')
+
+            form.save()           
+            user = User.objects.get(username=form.cleaned_data['username'])  
+            user.email = email 
+            user.save()
+            customer= Customer(
+                user = user,
+                email = form.cleaned_data['email'],
+                name = form.cleaned_data['username'],
+            )
+            customer.save()                     
+            
+            return redirect('store:login')
+            
+    else:
+        form = UserRegisterForm()                
+    return render(request,'store/user_register.html',{'form':form})
+
+def store (request):    
     data = cartData(request)
     cartItem = data['cartItem']          
 
@@ -54,16 +83,22 @@ def checkout(request):
     cartItem = data['cartItem']
     order = data['order']
     items = data['items']  
+    u_emails=[]
+    emails = User.objects.values_list('email',flat=True)
+    
+    for email in emails:
+        if email != '':
+            
+            u_emails.append(email)
+    
         
-    context={"items":items,"order":order,"cartItem":cartItem}
+    context={"items":items,"order":order,"cartItem":cartItem,"u_emails": json.dumps(u_emails)}
     return render(request,'store/checkout.html',context)
 
 def updateItem(request):
     data = json.loads(request.body)
     productId = data['productId']
-    action = data['action']
-    print(productId)
-    print(action)
+    action = data['action']    
 
     customer = request.user.customer
     product = Product.objects.get(id=productId)
